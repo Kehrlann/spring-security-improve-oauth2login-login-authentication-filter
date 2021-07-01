@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.client.web.HttpSessionOAuth2Authoriza
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 
+// REQUIRED to store the correct Authentication in the security context and in authorized client repository
 public class CustomOAuth2LoginAuthenticationFilter extends OAuth2LoginAuthenticationFilter {
 	private final OAuth2AuthorizedClientRepository authorizedClientRepository;
 

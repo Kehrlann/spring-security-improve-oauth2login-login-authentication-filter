@@ -7,8 +7,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.saml2.provider.service.authentication.OpenSamlAuthenticationProvider;
 import wf.garnier.oauth2example.oidc.CustomOAuth2LoginAuthenticationFilter;
 import wf.garnier.oauth2example.oidc.CustomOidcAuthorizationCodeAuthenticationProvider;
+import wf.garnier.oauth2example.saml.CustomSamlAuthenticationProvider;
 import wf.garnier.oauth2example.userdetails.CustomUserDetailsAuthenticationProvider;
 
 @Configuration
@@ -21,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public SecurityConfiguration(
 			CustomUserDetailsAuthenticationProvider customUserDetailsAuthenticationProvider,
 			OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository,
-			ClientRegistrationRepository clientRegistrationRepository) throws Exception {
+			ClientRegistrationRepository clientRegistrationRepository) {
 		this.customUserDetailsAuthenticationProvider = customUserDetailsAuthenticationProvider;
 		this.clientRegistrationRepository = clientRegistrationRepository;
 		this.oAuth2AuthorizedClientRepository = oAuth2AuthorizedClientRepository;
@@ -35,22 +37,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				super.authenticationManagerBean()
 		);
 		http
-			.authorizeRequests()
+				.authorizeRequests()
 				.anyRequest().authenticated()
 				.and()
-			.formLogin()
+				// internal users
+				.formLogin()
 				.permitAll()
 				.and()
-			.authenticationProvider(customUserDetailsAuthenticationProvider)
-			.oauth2Login()
+				.authenticationProvider(customUserDetailsAuthenticationProvider)
+				// oauth2
+				.oauth2Login()
 				.and()
-			.authenticationProvider(new CustomOidcAuthorizationCodeAuthenticationProvider())
-			.addFilterBefore(customOAuth2LoginAuthenticationFilter, OAuth2LoginAuthenticationFilter.class);
-				// TODO
-//			.saml2Login()
-//				.and()
-
-		// TODO: redir	ect to Hello ?
+				.authenticationProvider(new CustomOidcAuthorizationCodeAuthenticationProvider())
+				.addFilterBefore(customOAuth2LoginAuthenticationFilter, OAuth2LoginAuthenticationFilter.class)
+				// saml
+				.saml2Login()
+				.and()
+				.authenticationProvider(new CustomSamlAuthenticationProvider())
+		;
 	}
 
 }

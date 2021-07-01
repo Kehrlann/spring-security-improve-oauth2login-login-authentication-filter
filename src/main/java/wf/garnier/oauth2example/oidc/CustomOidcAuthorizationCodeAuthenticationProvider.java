@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.oidc.authentication.OidcAuthorizationCodeAuthenticationProvider;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 
+// REQUIRED to emit an AbstractAuthenticationEvent with a "custom" authentication
 public class CustomOidcAuthorizationCodeAuthenticationProvider extends OidcAuthorizationCodeAuthenticationProvider {
 	public CustomOidcAuthorizationCodeAuthenticationProvider() {
 		super(new DefaultAuthorizationCodeTokenResponseClient(), new OidcUserService());
