@@ -1,5 +1,7 @@
 package wf.garnier.oauth2example.saml;
 
+import java.util.List;
+
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticationToken;
@@ -9,7 +11,7 @@ public class CustomSamlAuthentication extends Saml2Authentication implements Cus
 
 	private final String providerName;
 	private final int numberOfStars;
-	private final boolean isAdmin = false;
+	private final boolean isAdmin;
 
 	public CustomSamlAuthentication(
 			Saml2AuthenticationToken saml2AuthenticationToken,
@@ -20,6 +22,13 @@ public class CustomSamlAuthentication extends Saml2Authentication implements Cus
 		providerName = saml2AuthenticationToken.getRelyingPartyRegistration().getRegistrationId();
 		Integer numberOfStars = samlPrincipal.getFirstAttribute("number_of_stars");
 		this.numberOfStars = numberOfStars != null ? numberOfStars : 0;
+
+		List<Object> groups = samlPrincipal.getAttribute("group");
+		if (groups != null) {
+			isAdmin = groups.contains("admin-group");
+		} else {
+			isAdmin = false;
+		}
 	}
 
 	@Override
